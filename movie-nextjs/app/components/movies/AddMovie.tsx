@@ -1,4 +1,6 @@
 "use client";
+import { MovieProps, useAddMovieMutation } from "@/lib/features/movies/moviesApi";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -22,6 +24,8 @@ export type FormValues = {
 };
 
 const AddMovieForm: React.FC = () => {
+  const [addMovieApi, addMovieApiResult] = useAddMovieMutation();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -64,6 +68,12 @@ const AddMovieForm: React.FC = () => {
 
   const onSubmit = (data: FormValues) => {
     console.log(data);
+    const newMoive: Partial<MovieProps> = {
+      ...data,
+    };
+    addMovieApi(newMoive)
+      .unwrap()
+      .then((data) => router.push("/movies"));
   };
 
   return (

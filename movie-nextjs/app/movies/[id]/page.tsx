@@ -1,31 +1,31 @@
 "use client";
 import GoBackLink from "@/app/components/common/GoBackLink";
 import { MovieDetailUI } from "@/app/components/movies/MovieDetailUI";
-import { MovieProps } from "@/lib/features/movies/moviesApi";
+import { useGetAllMoviesQuery } from "@/lib/features/movies/moviesApi";
 import { setMovie } from "@/lib/features/movies/moviesSlice";
 import { ReviewProps } from "@/lib/features/reviews/reviewApi";
 import { useAppDispatch } from "@/lib/hooks";
 import { useRouter } from "next/navigation";
 
-let movie: MovieProps = {
-  _id: "66d48e791ee13f66b4698139",
-  title: "The Lord of the Rings: The Fellowship of the Ring",
-  release_date: "2001-12-19T00:00:00.000Z",
-  genre: ["Adventure", "Drama", "Fantasy"],
-  director: "Peter Jackson",
-  cast: ["Elijah Wood", "Ian McKellen", "Orlando Bloom"],
-  plot_summary:
-    "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.",
-  duration: 178,
-  language: "English",
-  rating: 8.8,
-  production_company: "New Line Cinema",
-  screenplay_writer: "Fran Walsh, Philippa Boyens, Peter Jackson",
-  music_composer: "Howard Shore",
-  awards: ["Oscar for Best Cinematography", "Oscar for Best Makeup"],
-  age_rating: "PG-13",
-  __v: 0,
-};
+// let movie: MovieProps = {
+//   _id: "66d48e791ee13f66b4698139",
+//   title: "The Lord of the Rings: The Fellowship of the Ring",
+//   release_date: "2001-12-19T00:00:00.000Z",
+//   genre: ["Adventure", "Drama", "Fantasy"],
+//   director: "Peter Jackson",
+//   cast: ["Elijah Wood", "Ian McKellen", "Orlando Bloom"],
+//   plot_summary:
+//     "A meek Hobbit from the Shire and eight companions set out on a journey to destroy the powerful One Ring and save Middle-earth from the Dark Lord Sauron.",
+//   duration: 178,
+//   language: "English",
+//   rating: 8.8,
+//   production_company: "New Line Cinema",
+//   screenplay_writer: "Fran Walsh, Philippa Boyens, Peter Jackson",
+//   music_composer: "Howard Shore",
+//   awards: ["Oscar for Best Cinematography", "Oscar for Best Makeup"],
+//   age_rating: "PG-13",
+//   __v: 0,
+// };
 
 let reviews: ReviewProps[] = [
   {
@@ -47,15 +47,21 @@ let reviews: ReviewProps[] = [
 ];
 
 export default function MovieDetail({ params }: { params: { id: string } }) {
-  console.log("params", params);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { movie } = useGetAllMoviesQuery(undefined, {
+    selectFromResult: ({ data }) => ({
+      movie: data?.find((movie) => movie._id === params.id),
+    }),
+  });
+  if (!movie) {
+    return <div>Movie not found</div>;
+  }
   const handleEditClick = () => {
-    console.log("Edit clicked", movie);
+    // console.log("Edit clicked", movie);
     dispatch(setMovie(movie));
     router.push("/movies/editmovie");
   };
-
   return (
     <>
       <div className="flex justify-between items-center">
@@ -79,7 +85,7 @@ export default function MovieDetail({ params }: { params: { id: string } }) {
           Edit
         </button>
       </div>
-      <MovieDetailUI movie={movie} reviews={reviews} id={params.id} />
+      <MovieDetailUI movie={movie} id={params.id} />
     </>
   );
 }

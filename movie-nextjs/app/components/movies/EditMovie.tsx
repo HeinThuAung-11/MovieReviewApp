@@ -1,15 +1,18 @@
 "use client";
+import { useUpdateMovieMutation } from "@/lib/features/movies/moviesApi";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { FormValues } from "./AddMovie";
 
 type EditMovieFormProps = {
-  movie?: FormValues | null; // Movie data passed as props
-  onSubmit: (data: FormValues) => void; // Function to handle form submission
+  movie?: FormValues | null;
 };
 
-const EditMovieForm: React.FC<EditMovieFormProps> = ({ movie, onSubmit }) => {
+const EditMovieForm: React.FC<EditMovieFormProps> = ({ movie }) => {
   console.log("edit movie", movie);
+  const [editMovieApi, editMovieApiResult] = useUpdateMovieMutation();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -45,6 +48,12 @@ const EditMovieForm: React.FC<EditMovieFormProps> = ({ movie, onSubmit }) => {
     control,
     name: "awards",
   });
+  const onSubmit = (data: FormValues) => {
+    console.log("edit movie", data);
+    editMovieApi(data)
+      .unwrap()
+      .then((data) => router.push("/movies"));
+  };
   if (!movie) return <div>Loading...</div>;
   return (
     <form className="max-w-4xl mx-auto w-full p-4" onSubmit={handleSubmit(onSubmit)}>

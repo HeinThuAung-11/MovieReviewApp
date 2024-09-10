@@ -1,7 +1,7 @@
 "use client";
 import { ReviewProps } from "@/lib/features/reviews/reviewApi";
 
-export const ReviewList = ({ review }: { review: ReviewProps }) => {
+export const ReviewUI = ({ review }: { review: ReviewProps }) => {
   return (
     <li className="py-3 sm:py-4">
       <div className="flex items-start justify-between">

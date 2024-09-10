@@ -1,9 +1,10 @@
 "use client";
-import { MovieProps } from "@/lib/features/movies/moviesApi";
+import { MovieProps, useDeleteMovieMutation } from "@/lib/features/movies/moviesApi";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
 export const MovieUI = ({ movie }: { movie: MovieProps }) => {
+  const [deleteMovieApi, deleteMovieApiResult] = useDeleteMovieMutation();
   const handleDelete = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -20,6 +21,7 @@ export const MovieUI = ({ movie }: { movie: MovieProps }) => {
           text: "Your file has been deleted.",
           icon: "success",
         });
+        deleteMovieApi(movie._id);
       }
     });
   };

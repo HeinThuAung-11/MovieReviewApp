@@ -1,3 +1,4 @@
+import { useAddReviewMutation } from "@/lib/features/reviews/reviewApi";
 import { useForm } from "react-hook-form";
 
 interface reviewFormProps {
@@ -6,10 +7,12 @@ interface reviewFormProps {
   rating: Number;
 }
 export const ReviewForm = ({ movieId }: { movieId: string }) => {
+  const [addReviewApi, addReviewApiResult] = useAddReviewMutation();
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<reviewFormProps>({
     defaultValues: {},
@@ -20,7 +23,9 @@ export const ReviewForm = ({ movieId }: { movieId: string }) => {
       movie: movieId,
       ...data,
     };
-    console.log(review);
+    addReviewApi(review).then(() => {
+      reset();
+    });
   };
   return (
     <form className="w-full p-4" onSubmit={handleSubmit(onSubmit)}>
@@ -44,6 +49,7 @@ export const ReviewForm = ({ movieId }: { movieId: string }) => {
         <input
           type="number"
           id="rating"
+          step={0.5}
           {...register("rating", {
             required: "Rating is required",
             min: { value: 1, message: "Number must be at least 1" },

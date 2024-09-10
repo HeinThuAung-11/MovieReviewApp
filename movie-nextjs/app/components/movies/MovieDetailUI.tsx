@@ -1,14 +1,12 @@
 import { MovieProps } from "@/lib/features/movies/moviesApi";
-import { ReviewProps } from "@/lib/features/reviews/reviewApi";
-import { ReviewForm } from "./ReviewForm";
-import { ReviewList } from "./ReviewList";
+import { ReviewForm } from "../reviews/ReviewForm";
+import { ReviewList } from "../reviews/ReviewList";
 
 interface MovieDetailUIProps {
   movie: MovieProps;
-  reviews: ReviewProps[];
   id: string;
 }
-export const MovieDetailUI = ({ movie, reviews, id }: MovieDetailUIProps) => {
+export const MovieDetailUI = ({ movie, id }: MovieDetailUIProps) => {
   return (
     <div className="max-w-5xl mx-auto p-6">
       {/* Hero Section */}
@@ -93,18 +91,7 @@ export const MovieDetailUI = ({ movie, reviews, id }: MovieDetailUIProps) => {
       </div>
 
       {/* Reviews */}
-      <div className="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-        <div className="flex items-center justify-between mb-4">
-          <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Reviews</h5>
-        </div>
-        <div className="flow-root">
-          <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
-            {reviews.map((review) => (
-              <ReviewList review={review} key={review._id} />
-            ))}
-          </ul>
-        </div>
-      </div>
+      <ReviewList movieId={id} />
       <ReviewForm movieId={id} />
       {/* Similar Movies */}
       <div className="mb-8">
